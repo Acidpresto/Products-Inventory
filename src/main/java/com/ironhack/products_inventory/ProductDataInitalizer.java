@@ -77,7 +77,6 @@ public class ProductDataInitalizer {
 
             salesOrderRepository.save(sorder1);
 
-
             System.out.println("🪑 Sample of Products, Purchase order and Sales Order inserted.");
         };
 

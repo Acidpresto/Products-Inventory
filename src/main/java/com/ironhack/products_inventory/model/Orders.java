@@ -34,7 +34,7 @@ public abstract class Orders {
     private OrderOrigin origin;
 
     //PRODUCTS AND ORDERS HAVE A RELATION MANY TO MANY SO,
-    //WE HAVE CREATED AN INTERMEDIATE CLASS (ORDERSAFE)
+    //WE HAVE CREATED AN INTERMEDIATE CLASS (ORDER-SAFE)
     //TO SAVE MORE THAN ONE PRODUCT IN ONE ORDER
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderSafe> orderSafes;
