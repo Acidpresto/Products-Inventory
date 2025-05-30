@@ -1,14 +1,13 @@
 package com.ironhack.products_inventory.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,4 +24,6 @@ public class Products {
     private int price;
     private int min_quantity;
     private int stock;
+    @OneToMany (mappedBy = "product")
+    private List <Orders> orderList;
 }
