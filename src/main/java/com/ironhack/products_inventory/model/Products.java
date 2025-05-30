@@ -24,6 +24,7 @@ public class Products {
     private int price;
     private int min_quantity;
     private int stock;
-    @OneToMany (mappedBy = "product")
-    private List <Orders> orderList;
+
+    @OneToMany (mappedBy = "product", cascade = CascadeType.ALL)
+    private List <OrderSafe> orderSafes;
 }

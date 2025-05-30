@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,15 +24,20 @@ public abstract class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
+
     private LocalDate orderDate;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    private int quantityOrdered;
+
     @Enumerated(EnumType.STRING)
     private OrderOrigin origin;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Products product;
+
+    //PRODUCTS AND ORDERS HAVE A RELATION MANY TO MANY SO,
+    //WE HAVE CREATED AN INTERMEDIATE CLASS (ORDERSAFE)
+    //TO SAVE MORE THAN ONE PRODUCT IN ONE ORDER
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderSafe> orderSafes;
 
     //WE CREATE AN ABSTRACT METHOD TO RETURN THE PREFIXED ID: to differentiate between Sales(S) and Purchases(P)
     public abstract String getDisplayId();
