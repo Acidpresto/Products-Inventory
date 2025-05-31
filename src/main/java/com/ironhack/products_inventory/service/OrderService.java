@@ -2,33 +2,37 @@ package com.ironhack.products_inventory.service;
 
 import com.ironhack.products_inventory.dto.PurchaseOrderDTO;
 import com.ironhack.products_inventory.model.OrderSafe;
-import com.ironhack.products_inventory.model.Products;
+import com.ironhack.products_inventory.model.Product;
 import com.ironhack.products_inventory.model.PurchaseOrder;
 import com.ironhack.products_inventory.repository.OrdersRepository;
 import com.ironhack.products_inventory.repository.ProductRepository;
+import com.ironhack.products_inventory.repository.PurchaseOrderRepository;
+import com.ironhack.products_inventory.repository.SalesOrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
 
-    private final OrdersRepository ordersRepository;
+
+    private final PurchaseOrderRepository purchaseOrderRepository;
+    private final SalesOrderRepository salesOrderRepository;
     private final ProductRepository productRepository;
 
-    public OrderService(OrdersRepository ordersRepository, ProductRepository productRepository) {
-        this.ordersRepository = ordersRepository;
+    public OrderService(PurchaseOrderRepository purchaseOrderRepository, SalesOrderRepository salesOrderRepository, ProductRepository productRepository) {
         this.productRepository = productRepository;
+        this.purchaseOrderRepository = purchaseOrderRepository;
+        this.salesOrderRepository = salesOrderRepository;
     }
 
     //CREATE A NEW ORDER PURCHASE
     public PurchaseOrder createPurchaseOrder(PurchaseOrderDTO dto) {
 
-        //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE
+        //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE. AND VALIDATE ID
         List<OrderSafe> orderSafes = dto.getProducts().stream().map(item -> {
-            Products product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not valid"));
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not valid"));//NEW BAD REQUEST EXCEPTION
 
             OrderSafe os = new OrderSafe();
             os.setProduct(product);
@@ -47,7 +51,7 @@ public class OrderService {
         //LINK THE ORDER-SAFE WITH ORDER, THAT'S MANY TO ONE. EACH PRODUCT HAS AN ORDER
         orderSafes.forEach(os -> {os.setOrder(order);});
         //SAVE THE ORDER
-        return (PurchaseOrder) ordersRepository.save(order);
+        return (PurchaseOrder) purchaseOrderRepository.save(order);
     }
 
 

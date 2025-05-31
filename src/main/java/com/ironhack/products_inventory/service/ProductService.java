@@ -1,7 +1,7 @@
 package com.ironhack.products_inventory.service;
 
 
-import com.ironhack.products_inventory.model.Products;
+import com.ironhack.products_inventory.model.Product;
 import com.ironhack.products_inventory.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +17,22 @@ public class ProductService {
     }
 
     //FIND ALL PRODUCTS
-    public List<Products> findAll() {
+    public List<Product> findAll() {
         return productRepository.findAll();
     }
 
     //FIND BY WORD on the NAME
-    public List<Products> findByProductNameContaining(String productName) {
+    public List<Product> findByProductNameContaining(String productName) {
         return productRepository.findByProductNameContaining(productName);
     }
 
     //FIND BY ID
-    public Products findById(Long productId) {
+    public Product findById(Long productId) {
         return productRepository.findById(productId).get();
     }
 
     //FIND BY EXACT NAME
-    public List<Products> findByName (String productName) {
+    public List<Product> findByName (String productName) {
         return productRepository.findByProductName(productName);
     }
 }

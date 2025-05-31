@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Products {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
@@ -22,7 +22,7 @@ public class Products {
     private String productName;
     private String description;
     private int price;
-    private int min_quantity;
+    private int minQuantity;
     private int stock;
 
     @OneToMany (mappedBy = "product", cascade = CascadeType.ALL)

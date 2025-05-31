@@ -1,6 +1,7 @@
 package com.ironhack.products_inventory.dto;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderProductDTO {
+    @NotNull
+    //no negative
     private Long productId;
+    //Add a validation to be positive
     private int quantityOrdered;
 }

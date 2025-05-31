@@ -1,6 +1,6 @@
 package com.ironhack.products_inventory.controller;
 
-import com.ironhack.products_inventory.model.Products;
+import com.ironhack.products_inventory.model.Product;
 import com.ironhack.products_inventory.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,22 +17,22 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public List<Products> findAll() {
+    public List<Product> findAll() {
         return productService.findAll();
     }
 
     @GetMapping("/name-contains")
-    public List<Products> findByNameContains(@RequestParam String productName) {
+    public List<Product> findByNameContains(@RequestParam String productName) {
         return productService.findByProductNameContaining(productName);
     }
 
     @GetMapping("/name")
-    public List<Products> findByName(@RequestParam String productName) {
+    public List<Product> findByName(@RequestParam String productName) {
         return productService.findByName(productName);
     }
 
     @GetMapping("/{id}")
-    public Products findById(@PathVariable Long id) {
+    public Product findById(@PathVariable Long id) {
         return productService.findById(id);
     }
 }

@@ -1,7 +1,6 @@
 package com.ironhack.products_inventory;
 
 import com.ironhack.products_inventory.model.*;
-import com.ironhack.products_inventory.repository.OrdersRepository;
 import com.ironhack.products_inventory.repository.ProductRepository;
 import com.ironhack.products_inventory.repository.PurchaseOrderRepository;
 import com.ironhack.products_inventory.repository.SalesOrderRepository;
@@ -15,7 +14,6 @@ import java.util.List;
 import static com.ironhack.products_inventory.enums.OrderOrigin.PURCHASE;
 import static com.ironhack.products_inventory.enums.OrderOrigin.SALES;
 import static com.ironhack.products_inventory.enums.OrderStatus.PAYED;
-import static com.ironhack.products_inventory.enums.OrderStatus.PENDING_PAYMENT;
 
 @Configuration
 public class ProductDataInitalizer {
@@ -23,12 +21,12 @@ public class ProductDataInitalizer {
     @Bean
     CommandLineRunner productInitalizer(ProductRepository productsRepository, PurchaseOrderRepository purchaseOrderRepository, SalesOrderRepository salesOrderRepository) {        return args -> {
 
-            // HELLO! HERE IT IS THE PRODUCTS WE HAVE ON OUR WAREHOUSE
-            Products chair1 = new Products(null, "Standard Chair", "Comfortable chair with lumbar support", 250, 1, 50, null);
-            Products chair2 = new Products(null, "Office Chair", "Standard office chair with wheels", 120, 2, 100, null);
-            Products chair3 = new Products(null, "Gaming Chair", "Reclining gaming chair with headrest", 300, 1, 30, null);
-            Products chair4 = new Products(null, "Dining Chair", "Set of 4 wooden dining chairs", 200, 4, 20, null);
-            Products chair5 = new Products(null, "Lounge Chair", "Modern fabric lounge chair", 180, 1, 25, null);
+            // HELLO! HERE IT IS THE INITIAL PRODUCTS WE HAVE ON OUR WAREHOUSE:
+            Product chair1 = new Product(null, "Standard Chair", "Comfortable wooden study chair", 25, 1, 50, null);
+            Product chair2 = new Product(null, "Office Chair", "Standard office chair with wheels", 120, 2, 100, null);
+            Product chair3 = new Product(null, "Gaming Chair", "Reclining gaming chair", 180, 1, 30, null);
+            Product chair4 = new Product(null, "Dining Chair", "Set of 4 wooden chairs, perfect for living rooms", 200, 4, 20, null);
+            Product chair5 = new Product(null, "Lounge Chair", "Modern fabric lounge chair", 220, 1, 25, null);
 
             productsRepository.saveAll(List.of(chair1, chair2, chair3, chair4, chair5));
 
