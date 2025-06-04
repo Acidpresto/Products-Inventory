@@ -32,7 +32,7 @@ public class OrderService {
         //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE. AND VALIDATE ID
         List<OrderSafe> orderSafes = dto.getProducts().stream().map(item -> {
             Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not valid"));//NEW BAD REQUEST EXCEPTION
+                    .orElseThrow(() -> new RuntimeException("Product not valid"));//TODO NEW BAD REQUEST EXCEPTION
 
             OrderSafe os = new OrderSafe();
             os.setProduct(product);
