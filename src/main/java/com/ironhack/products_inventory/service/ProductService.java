@@ -20,10 +20,9 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-
-    //FIND ALL PRODUCTS - WE CALL PRODUCT DTO CONSTRUCTOR WITHOUT THE ORDER-SAFE
+    //FOR ALL THE METHODS WE CALL PRODUCT DTO CONSTRUCTOR WITHOUT THE ORDER-SAFE
+    //FIND ALL PRODUCTS
     public List<ProductDTO> findAll() {
-
         return productRepository.findAll().stream().map(p -> new ProductDTO (
                 p.getProductId(),
                 p.getProductName(),
@@ -35,34 +34,59 @@ public class ProductService {
     }
 
     //FIND BY WORD on the NAME
-    public List<Product> findByProductNameContaining(String productName) {
-        return productRepository.findByProductNameContaining(productName);
+    public List<ProductDTO> findByProductNameContaining(String productName) {
+        return productRepository.findByProductNameContaining(productName).stream().map(p -> new ProductDTO (
+                p.getProductId(),
+                p.getProductName(),
+                p.getDescription(),
+                p.getPrice(),
+                p.getMinQuantity(),
+                p.getStock()))
+                .collect(Collectors.toList());
     }
 
     //FIND BY ID
-    public Product findById(Long productId) {
-        return productRepository.findById(productId).get();
+    public ProductDTO findById(Long productId) {
+        return productRepository.findById(productId).map(p-> new ProductDTO (
+                        p.getProductId(),
+                        p.getProductName(),
+                        p.getDescription(),
+                        p.getPrice(),
+                        p.getMinQuantity(),
+                        p.getStock()))
+                        .orElseThrow(() -> new ProductNotFoundExcpetion("Product with id " + productId + " not found"));
     }
 
     //FIND BY EXACT NAME
-    public List<Product> findByName (String productName) {
-        return productRepository.findByProductName(productName);
+    public List<ProductDTO> findByName (String productName) {
+        List<Product> products = productRepository.findByProductNameContaining(productName);
+
+        if (products.isEmpty()) {
+            throw new ProductNotFoundExcpetion("Product with name " + productName + " not found");
+        }
+        return products.stream().map(p-> new ProductDTO(
+                p.getProductId(),
+                p.getProductName(),
+                p.getDescription(),
+                p.getPrice(),
+                p.getMinQuantity(),
+                p.getStock()))
+                .collect(Collectors.toList());
     }
 
     //DELETE PRODUCT
-    public Product deleteById(Long productId) {
+    public void deleteById(Long productId) {
         Optional<Product> productOptional = productRepository.findById(productId);
 
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
             productRepository.delete(product);
-            return product;
         } else {
             throw new ProductNotFoundExcpetion("Product with ID " + productId + " not found");
         }
     }
 
-    //UPDATE PRODUCTS DETAILS - (DESPITE ID)
+    //UPDATE PRODUCTS DETAILS - (DESPITE ID) //TODO ADJUST THE SERIVCE TO CONNECT PRODUCT DTO
     public Product patchProduct (Long productId, PorductPatchDTO productDTO){
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundExcpetion("Product with ID " + productId + " not found"));
 

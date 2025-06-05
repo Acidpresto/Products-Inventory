@@ -25,23 +25,24 @@ public class ProductController {
     }
 
     @GetMapping("/name-contains")
-    public List<Product> findByNameContains(@RequestParam String productName) {
+    public List<ProductDTO> findByNameContains(@RequestParam String productName) {
         return productService.findByProductNameContaining(productName);
     }
 
     @GetMapping("/name")
-    public List<Product> findByName(@RequestParam String productName) {
+    public List<ProductDTO> findByName(@RequestParam String productName) {
         return productService.findByName(productName);
     }
 
     @GetMapping("/{id}")
-    public Product findById(@PathVariable Long id) {
+    public ProductDTO findById(@PathVariable Long id) {
         return productService.findById(id);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete (@PathVariable Long id) {
+    public ResponseEntity<String> delete (@PathVariable Long id) {
         productService.deleteById(id);
+        return ResponseEntity.ok("Product with id: " + id + " has been deleted");
     }
 
     @PatchMapping("/{id}")
