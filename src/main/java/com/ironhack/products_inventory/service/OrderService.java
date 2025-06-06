@@ -6,6 +6,7 @@ import com.ironhack.products_inventory.dto.PurchaseOrderDTO;
 import com.ironhack.products_inventory.enums.OrderStatus;
 import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.excpetions.OrderNotFoundExcpetion;
+import com.ironhack.products_inventory.excpetions.ProductNotFoundExcpetion;
 import com.ironhack.products_inventory.model.OrderSafe;
 import com.ironhack.products_inventory.model.Product;
 import com.ironhack.products_inventory.model.PurchaseOrder;
@@ -15,8 +16,10 @@ import com.ironhack.products_inventory.repository.PurchaseOrderRepository;
 import com.ironhack.products_inventory.repository.SalesOrderRepository;
 import jakarta.transaction.Transactional;
 import org.hibernate.query.Order;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +66,7 @@ public class OrderService {
         //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE. AND VALIDATE ID
         List<OrderSafe> orderSafes = dto.getProducts().stream().map(item -> {
             Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not valid"));//TODO NEW BAD REQUEST EXCEPTION
+                    .orElseThrow(() -> new ProductNotFoundExcpetion("Invalid product ID: " + item.getProductId()));
 
             OrderSafe os = new OrderSafe();
             os.setProduct(product);
@@ -73,9 +76,9 @@ public class OrderService {
 
         //CREATE A NEW PURCHASE-ORDER FROM DTO VALUES
         PurchaseOrder order = new PurchaseOrder(
-                dto.getOrderDate(),
-                dto.getStatus(),
-                dto.getOrigin(),
+                LocalDate.now(),
+                OrderStatus.PENDING_PAYMENT,
+                OrderType.PURCHASE,
                 orderSafes,
                 dto.getSupplierName()
         );
@@ -112,5 +115,5 @@ public class OrderService {
     }
 
 
-    //TODO SALES CREATE
+    //TODO CREATE NEW ORDER SALES
 }

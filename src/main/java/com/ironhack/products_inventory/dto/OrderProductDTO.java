@@ -12,10 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderProductDTO {
-    @NotNull
-    //no negative
+
     private Long productId;
     private String productName;
-    //Add a validation to be positive
     private Integer quantityOrdered;
+
+    //WITHOUT NAME
+    public OrderProductDTO(Long productId, Integer quantityOrdered) {
+        this.productId = productId;
+        this.quantityOrdered = quantityOrdered;
+    }
 }

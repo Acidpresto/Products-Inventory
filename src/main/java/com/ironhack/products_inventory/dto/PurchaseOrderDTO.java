@@ -6,6 +6,7 @@ import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.enums.OrderStatus;
 import com.ironhack.products_inventory.service.OrderService;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,13 +24,15 @@ public class PurchaseOrderDTO {
     //WE CAN'T EDIT THE ID
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    //add a constraint minimum date
-    private LocalDate orderDate;
-    private OrderStatus status;
-    @NotNull
-    private OrderType origin;
+    //DEFAULT IS NOW
+    private LocalDate orderDate = LocalDate.now();
+    //DEFAULT IS NOT PAYED
+    private OrderStatus status = OrderStatus.PENDING_PAYMENT;
+    //DEFAULT PURCHASE
+    private OrderType origin = OrderType.PURCHASE;
     @NotBlank
     private String supplierName;
+    @NotEmpty
     private List<OrderProductDTO> products;
 
 
