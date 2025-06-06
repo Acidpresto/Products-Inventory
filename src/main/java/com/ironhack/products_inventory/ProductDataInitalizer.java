@@ -11,8 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.ironhack.products_inventory.enums.OrderOrigin.PURCHASE;
-import static com.ironhack.products_inventory.enums.OrderOrigin.SALES;
+import static com.ironhack.products_inventory.enums.OrderStatus.PENDING_PAYMENT;
+import static com.ironhack.products_inventory.enums.OrderType.PURCHASE;
+import static com.ironhack.products_inventory.enums.OrderType.SALES;
 import static com.ironhack.products_inventory.enums.OrderStatus.PAYED;
 
 @Configuration
@@ -40,7 +41,7 @@ public class ProductDataInitalizer {
             op2.setQuantityOrdered(5);
 
            //THAT'S AND ORDER OF PURCHASE
-            PurchaseOrder porder1 = new PurchaseOrder(LocalDate.now(), PAYED, PURCHASE, List.of(op1, op2), "IKAE");
+            PurchaseOrder porder1 = new PurchaseOrder(LocalDate.now(), PENDING_PAYMENT, PURCHASE, List.of(op1, op2), "IKAE");
             //WE ASSIGN EACH ORDERSAFE TO THE PURCHASE
             op1.setOrder(porder1);
             op2.setOrder(porder1);
@@ -51,7 +52,7 @@ public class ProductDataInitalizer {
             OrderSafe op3 = new OrderSafe();
             op3.setProduct(chair4);
             op3.setQuantityOrdered(5);
-            PurchaseOrder porder2 = new PurchaseOrder(LocalDate.now(), PAYED, PURCHASE, List.of(op3), "Carpinterie Ferrer" );
+            PurchaseOrder porder2 = new PurchaseOrder(LocalDate.now(), PENDING_PAYMENT, PURCHASE, List.of(op3), "Carpinterie Ferrer" );
             op3.setOrder(porder2);
             purchaseOrderRepository.save(porder2);
 

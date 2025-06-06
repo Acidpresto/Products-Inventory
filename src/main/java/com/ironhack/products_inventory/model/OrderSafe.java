@@ -13,7 +13,7 @@ public class OrderSafe {
     @Id
     private Long id;
 
-    private int quantityOrdered;
+    private Integer quantityOrdered;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

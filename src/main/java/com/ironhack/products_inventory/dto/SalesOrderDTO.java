@@ -1,6 +1,6 @@
 package com.ironhack.products_inventory.dto;
 
-import com.ironhack.products_inventory.enums.OrderOrigin;
+import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.enums.OrderStatus;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.util.List;
 public class SalesOrderDTO {
     private LocalDate orderDate;
     private OrderStatus status;
-    private OrderOrigin origin;
+    private OrderType origin;
     @NotBlank
     private String customerName;
     @NotBlank

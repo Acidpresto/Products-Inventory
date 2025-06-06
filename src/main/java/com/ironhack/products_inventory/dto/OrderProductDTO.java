@@ -15,6 +15,7 @@ public class OrderProductDTO {
     @NotNull
     //no negative
     private Long productId;
+    private String productName;
     //Add a validation to be positive
-    private int quantityOrdered;
+    private Integer quantityOrdered;
 }

@@ -1,7 +1,7 @@
 package com.ironhack.products_inventory.model;
 
 
-import com.ironhack.products_inventory.enums.OrderOrigin;
+import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,11 +27,11 @@ public abstract class Order {
 
     private LocalDate orderDate;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)//PAYED,PENDING_PAYMENT, PREPARED, SHIPPED, DELIVERED
     private OrderStatus status;
 
-    @Enumerated(EnumType.STRING)
-    private OrderOrigin origin;
+    @Enumerated(EnumType.STRING) //PURCHASE or SALE
+    private OrderType type;
 
     //PRODUCTS AND ORDERS HAVE A RELATION MANY TO MANY SO,
     //WE HAVE CREATED AN INTERMEDIATE CLASS (ORDER-SAFE)
@@ -42,10 +42,10 @@ public abstract class Order {
     //WE CREATE AN ABSTRACT METHOD TO RETURN THE PREFIXED ID: to differentiate between Sales(S) and Purchases(P)
     public abstract String getDisplayId();
 
-    public Order(LocalDate orderDate, OrderStatus status, OrderOrigin origin, List<OrderSafe> orderSafes) {
+    public Order(LocalDate orderDate, OrderStatus status, OrderType origin, List<OrderSafe> orderSafes) {
         this.orderDate = orderDate;
         this.status = status;
-        this.origin = origin;
+        this.type = origin;
         this.orderSafes = orderSafes;
     }
 }

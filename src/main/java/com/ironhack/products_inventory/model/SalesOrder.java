@@ -1,6 +1,6 @@
 package com.ironhack.products_inventory.model;
 
-import com.ironhack.products_inventory.enums.OrderOrigin;
+import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.enums.OrderStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -18,7 +18,7 @@ public class SalesOrder extends Order {
     private String customerName;
     private String customerAddress;
 
-    public SalesOrder( LocalDate orderDate, OrderStatus status, OrderOrigin origin, List<OrderSafe> orderSafes, String customerName, String customerAddress) {
+    public SalesOrder(LocalDate orderDate, OrderStatus status, OrderType origin, List<OrderSafe> orderSafes, String customerName, String customerAddress) {
         super(orderDate, status, origin, orderSafes);
         this.customerName = customerName;
         this.customerAddress = customerAddress;
