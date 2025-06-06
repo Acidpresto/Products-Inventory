@@ -13,5 +13,6 @@ List <Product> findByProductName(String productName);
 
 List<Product> findByProductNameContaining(String productName);
 
+List<Product> findByProductNameIgnoreCase(String productName);
 
 }

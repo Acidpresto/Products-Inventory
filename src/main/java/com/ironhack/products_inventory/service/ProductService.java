@@ -2,10 +2,13 @@ package com.ironhack.products_inventory.service;
 
 
 import com.ironhack.products_inventory.dto.ProductDTO;
+import com.ironhack.products_inventory.excpetions.DuplicateProductExcpetion;
 import com.ironhack.products_inventory.excpetions.ProductNotFoundExcpetion;
 import com.ironhack.products_inventory.model.Product;
 import com.ironhack.products_inventory.repository.ProductRepository;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +37,10 @@ public class ProductService {
 
     //FIND BY WORD on the NAME
     public List<ProductDTO> findByProductNameContaining(String productName) {
+        if (productName.isEmpty()) {
+            throw new ProductNotFoundExcpetion("Product with name " + productName + " not found");
+        }
+
         return productRepository.findByProductNameContaining(productName).stream().map(p -> new ProductDTO (
                 p.getProductId(),
                 p.getProductName(),
@@ -113,8 +120,15 @@ public class ProductService {
 
     //CREATE NEW PRODUCT
     public Product createProduct (ProductDTO productDTO) {
-        Product product = new Product();
+        //AVOID DUPLICATES NAMES
+        boolean nameExists = !productRepository.findByProductNameIgnoreCase(productDTO.getProductName()).isEmpty();
 
+        if (nameExists) {
+            throw new DuplicateProductExcpetion(
+                    "Product with name " + productDTO.getProductName() + " already exists");
+        }
+        //IF WE PASS THE VALIDATION, CREATE A NEW PRODUCT
+        Product product = new Product();
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());

@@ -3,6 +3,7 @@ package com.ironhack.products_inventory.controller;
 import com.ironhack.products_inventory.dto.ProductDTO;
 import com.ironhack.products_inventory.model.Product;
 import com.ironhack.products_inventory.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductDTO> update(@Valid @PathVariable Long id, @RequestBody ProductDTO dto) {
         Product updatedProduct = productService.patchProduct(id, dto);
         ProductDTO responseDTO = new ProductDTO(
                 updatedProduct.getProductId(),
@@ -60,7 +61,7 @@ public class ProductController {
     }
 
     @PutMapping("/new-product")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO dto) {
         Product savedProduct = productService.createProduct(dto);
 
         ProductDTO responseDTO = new ProductDTO(
