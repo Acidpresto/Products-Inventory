@@ -1,7 +1,6 @@
 package com.ironhack.products_inventory.service;
 
 
-import com.ironhack.products_inventory.dto.PorductPatchDTO;
 import com.ironhack.products_inventory.dto.ProductDTO;
 import com.ironhack.products_inventory.excpetions.ProductNotFoundExcpetion;
 import com.ironhack.products_inventory.model.Product;
@@ -86,26 +85,42 @@ public class ProductService {
         }
     }
 
-    //UPDATE PRODUCTS DETAILS - (DESPITE ID) //TODO ADJUST THE SERIVCE TO CONNECT PRODUCT DTO
-    public Product patchProduct (Long productId, PorductPatchDTO productDTO){
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundExcpetion("Product with ID " + productId + " not found"));
+    //UPDATE PRODUCTS DETAILS - (DESPITE ID THAT IS BLOCKED ON THE DTO) //
+    public Product patchProduct (Long productId, ProductDTO productDTO) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundExcpetion("Product with ID " + productId + " not found"));
 
          if (productDTO.getProductName() != null) {
              product.setProductName(productDTO.getProductName());
          }
 
-         if (productDTO.getPrice() != null) {
-             product.setPrice(productDTO.getPrice());
+         if (productDTO.getDescription() != null) {
+             product.setDescription(productDTO.getDescription());
          }
 
+         if (productDTO.getPrice() != null){
+             product.setPrice(productDTO.getPrice());
+         }
          if (productDTO.getMinQuantity() != null) {
              product.setMinQuantity(productDTO.getMinQuantity());
          }
-
          if (productDTO.getStock() != null) {
              product.setStock(productDTO.getStock());
          }
 
          return productRepository.save(product);
+    }
+
+    //CREATE NEW PRODUCT
+    public Product createProduct (ProductDTO productDTO) {
+        Product product = new Product();
+
+        product.setProductName(productDTO.getProductName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setMinQuantity(productDTO.getMinQuantity());
+        product.setStock(productDTO.getStock());
+
+        return productRepository.save(product);
     }
 }
