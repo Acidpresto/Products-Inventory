@@ -69,7 +69,7 @@ public class ProductDataInitalizer {
             os3.setProduct(chair2);
             os3.setQuantityOrdered(5);
 
-            SalesOrder sorder1 = new SalesOrder(LocalDate.now(), PAYED, SALES, List.of(os1, os2, os3), "Marco", "C.Major, 12");
+            SalesOrder sorder1 = new SalesOrder(LocalDate.now(), PENDING_PAYMENT, SALES, List.of(os1, os2, os3), "Marco", "C.Major, 12");
             os1.setOrder(sorder1);
             os2.setOrder(sorder1);
             os3.setOrder(sorder1);

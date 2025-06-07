@@ -65,7 +65,7 @@ public class ProductService {
     }
 
     //FIND BY EXACT NAME
-    public List<ProductDTO> findByName (String productName) {
+    public List<ProductDTO> findByProductName (String productName) {
         List<Product> products = productRepository.findByProductNameContaining(productName);
 
         if (products.isEmpty()) {

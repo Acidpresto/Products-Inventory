@@ -2,14 +2,21 @@ package com.ironhack.products_inventory.model;
 
 import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.enums.OrderStatus;
+import jakarta.persistence.Access;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Setter
+@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 @Entity
 @PrimaryKeyJoinColumn(name = "order_id")

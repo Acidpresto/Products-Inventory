@@ -32,7 +32,7 @@ public class ProductController {
 
     @GetMapping("/name")
     public List<ProductDTO> findByName(@RequestParam String productName) {
-        return productService.findByName(productName);
+        return productService.findByProductName(productName);
     }
 
     @GetMapping("/{id}")

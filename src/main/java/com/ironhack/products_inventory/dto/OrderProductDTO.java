@@ -15,9 +15,10 @@ public class OrderProductDTO {
 
     private Long productId;
     private String productName;
+    @NotNull
     private Integer quantityOrdered;
 
-    //WITHOUT NAME
+    //CONSTRUCTOR WITHOUT NAME
     public OrderProductDTO(Long productId, Integer quantityOrdered) {
         this.productId = productId;
         this.quantityOrdered = quantityOrdered;
