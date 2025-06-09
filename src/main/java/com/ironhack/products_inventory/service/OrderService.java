@@ -1,7 +1,6 @@
 package com.ironhack.products_inventory.service;
 
 import com.ironhack.products_inventory.dto.OrderProductDTO;
-import com.ironhack.products_inventory.dto.ProductDTO;
 import com.ironhack.products_inventory.dto.PurchaseOrderDTO;
 import com.ironhack.products_inventory.dto.SalesOrderDTO;
 import com.ironhack.products_inventory.enums.OrderStatus;
@@ -12,21 +11,19 @@ import com.ironhack.products_inventory.model.OrderSafe;
 import com.ironhack.products_inventory.model.Product;
 import com.ironhack.products_inventory.model.PurchaseOrder;
 import com.ironhack.products_inventory.model.SalesOrder;
-import com.ironhack.products_inventory.repository.OrdersRepository;
 import com.ironhack.products_inventory.repository.ProductRepository;
 import com.ironhack.products_inventory.repository.PurchaseOrderRepository;
 import com.ironhack.products_inventory.repository.SalesOrderRepository;
 import jakarta.transaction.Transactional;
-import org.hibernate.query.Order;
-import org.springframework.cglib.core.Local;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 public class OrderService {
 
@@ -34,13 +31,12 @@ public class OrderService {
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final SalesOrderRepository salesOrderRepository;
     private final ProductRepository productRepository;
-    private final OrdersRepository ordersRepository;
 
-    public OrderService(PurchaseOrderRepository purchaseOrderRepository, SalesOrderRepository salesOrderRepository, ProductRepository productRepository, OrdersRepository ordersRepository) {
+
+    public OrderService(PurchaseOrderRepository purchaseOrderRepository, SalesOrderRepository salesOrderRepository, ProductRepository productRepository) {
         this.productRepository = productRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.salesOrderRepository = salesOrderRepository;
-        this.ordersRepository = ordersRepository;
     }
 
     //GET PURCHASE ORDERS
@@ -98,7 +94,10 @@ public class OrderService {
         if (order.getType() == OrderType.PURCHASE
             &&  newStatus == OrderStatus.PAYED
             && order.getStatus() != OrderStatus.PAYED){
+            log.info("Order status updated to " + newStatus);
 
+            LocalDateTime date = LocalDateTime.now();
+// variable localDate.now()
             for (OrderSafe orderSafe : order.getOrderSafes()) {
                 Product product = orderSafe.getProduct();
                 Integer quantityOrdered = orderSafe.getQuantityOrdered();
@@ -107,6 +106,9 @@ public class OrderService {
                 product.setStock(product.getStock() + quantityOrdered);
                 productRepository.save(product);
             }
+
+ // if localDate variable han pasado -- para la demo diría 1 min/ 30 seg -- actualizas el estado 1º a uno y haces un log en terminal en cada camnio
+        log.info("Order status updated to " + newStatus);
         }
 
         order.setStatus(newStatus);
@@ -179,6 +181,8 @@ public class OrderService {
                 productRepository.save(product);
             }
         }
+
+
         order.setStatus(newStatus);
         return salesOrderRepository.save(order);
 

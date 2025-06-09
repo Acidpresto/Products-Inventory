@@ -58,7 +58,6 @@ public class OrderController {
         return orderService.findSaleOrders();
     }
 
-
     @PatchMapping("/{id}/sales/status")
     public ResponseEntity<SalesOrderDTO> updateOrderStatus2(@PathVariable Long id, @RequestBody SalesOrderDTO dto) {
         SalesOrder updated = orderService.updateSalesStatus(id, dto.getStatus());
