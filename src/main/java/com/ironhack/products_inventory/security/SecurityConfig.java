@@ -23,23 +23,14 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // Servicio que Spring Security utiliza para cargar detalles de usuario desde la base de datos
     private final UserDetailsService userDetailsService;
 
-    // Builder que nos permite construir el AuthenticationManager
     private final AuthenticationManagerBuilder authManagerBuilder;
 
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    /**
-     * Bean definition for SecurityFilterChain
-     *
-     * @param http the instance of HttpSecurity
-     * @return an instance of the SecurityFilterChain
-     * @throws Exception if there is an issue building the SecurityFilterChain
-     */
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -62,13 +53,9 @@ public class SecurityConfig {
                 .requestMatchers(POST, "/api/roles/add-to-user").hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()); // aquí indicamos que cualquier otro endpoint tiene que tener autenticación (privado)
 
-        // Añade el filtro de autenticación al objeto http de seguridad
         http.addFilter(customAuthenticationFilter);
-
-        // Añade el filtro de autorización
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        // Construye y retorna el SecurityFilterChain
         return http.build();
     }
 }
