@@ -7,13 +7,8 @@ import com.ironhack.products_inventory.enums.OrderStatus;
 import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.excpetions.OrderNotFoundExcpetion;
 import com.ironhack.products_inventory.excpetions.ProductNotFoundExcpetion;
-import com.ironhack.products_inventory.model.OrderSafe;
-import com.ironhack.products_inventory.model.Product;
-import com.ironhack.products_inventory.model.PurchaseOrder;
-import com.ironhack.products_inventory.model.SalesOrder;
-import com.ironhack.products_inventory.repository.ProductRepository;
-import com.ironhack.products_inventory.repository.PurchaseOrderRepository;
-import com.ironhack.products_inventory.repository.SalesOrderRepository;
+import com.ironhack.products_inventory.model.*;
+import com.ironhack.products_inventory.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,16 +22,23 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final SalesOrderRepository salesOrderRepository;
     private final ProductRepository productRepository;
+    private final CustomerRepository customerRepository;
+    private final SupplierRepository supplierRepository;
 
-
-    public OrderService(PurchaseOrderRepository purchaseOrderRepository, SalesOrderRepository salesOrderRepository, ProductRepository productRepository) {
+    public OrderService(
+            PurchaseOrderRepository purchaseOrderRepository,
+            SalesOrderRepository salesOrderRepository,
+            ProductRepository productRepository,
+            CustomerRepository customerRepository,
+            SupplierRepository supplierRepository) {
         this.productRepository = productRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.salesOrderRepository = salesOrderRepository;
+        this.customerRepository = customerRepository;
+        this.supplierRepository = supplierRepository;
     }
 
     //GET PURCHASE ORDERS
@@ -53,13 +55,13 @@ public class OrderService {
                         p.getOrderDate(),
                         p.getStatus(),
                         p.getType(),
-                        p.getSupplierName(),
+                        p.getSupplier().getCompanyName(),
                         products);
         }).collect(Collectors.toList());
     }
 
     //CREATE A NEW PURCHASE ORDER
-    public PurchaseOrder createPurchaseOrder(PurchaseOrderDTO dto) {
+    public PurchaseOrderDTO createPurchaseOrderDTO(PurchaseOrderDTO dto) {
 
         //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE. AND VALIDATE ID
         List<OrderSafe> orderSafes = dto.getProducts().stream().map(item -> {
@@ -73,16 +75,32 @@ public class OrderService {
         }).toList();
 
         //CREATE A NEW PURCHASE-ORDER FROM DTO VALUES
+        Supplier supplier = supplierRepository.findById(dto.getSupplierId())
+                .orElseThrow(() -> new RuntimeException("Invalid customer ID: " + dto.getSupplierId()));
+
         PurchaseOrder order = new PurchaseOrder(
                 LocalDate.now(),
                 OrderStatus.PENDING_PAYMENT,
                 OrderType.PURCHASE,
                 orderSafes,
-                dto.getSupplierName()
+                supplier
         );
         //LINK THE ORDER-SAFE WITH ORDER, THAT'S MANY TO ONE. EACH PRODUCT HAS AN ORDER, AND SAVE IT
         orderSafes.forEach(os -> {os.setOrder(order);});
-        return (PurchaseOrder) purchaseOrderRepository.save(order);
+
+        PurchaseOrder saved = purchaseOrderRepository.save(order);
+
+        return new PurchaseOrderDTO(
+                saved.getOrderId(),
+                saved.getOrderDate(),
+                saved.getStatus(),
+                saved.getType(),
+                saved.getSupplier().getCompanyName(),
+                saved.getOrderSafes().stream().map(os -> new OrderProductDTO(
+                        os.getProduct().getProductId(),
+                        os.getQuantityOrdered())).toList()
+        );
+
     }
 
     //PURCHASE CHANGE STATUS TO PAYED -> INCREASE THE NUMBER OF STOCK OF THE PRODUCTS ORDER
@@ -131,14 +149,13 @@ public class OrderService {
                     p.getOrderDate(),
                     p.getStatus(),
                     p.getType(),
-                    p.getCustomerName(),
-                    p.getCustomerAddress(),
+                    p.getCustomer().getId(),
                     products);
         }).collect(Collectors.toList());
     }
 
     //CREATE A NEW SALES ORDER
-    public SalesOrder createSalesOrder(SalesOrderDTO dto) {
+    public SalesOrderDTO createSalesOrderDTO(SalesOrderDTO dto) {
         //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE. AND VALIDATE ID
         List<OrderSafe> orderSafes = dto.getProducts().stream().map(item->
         {Product product = productRepository.findById(item.getProductId()).orElseThrow(
@@ -148,18 +165,36 @@ public class OrderService {
             os.setProduct(product);
             os.setQuantityOrdered(item.getQuantityOrdered());
             return os;}).toList();
-        //CREATE A SALES ORDER FROM DTO VALUES
+
+        //FIND CUSTOMER BY ID
+        Customer customer = customerRepository.findById(dto.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Invalid customer ID: " + dto.getCustomerId()));
+
         SalesOrder order = new SalesOrder(
                 LocalDate.now(),
                 OrderStatus.PENDING_PAYMENT,
                 OrderType.SALES,
                 orderSafes,
-                dto.getCustomerName(),
-                dto.getCustomerAddress()
+                customer
         );
         //LINK AND SAVE
         orderSafes.forEach(os -> {os.setOrder(order);});
-        return (SalesOrder) salesOrderRepository.save(order);
+        SalesOrder saved = salesOrderRepository.save(order);
+
+        return new SalesOrderDTO(
+                saved.getOrderId(),
+                saved.getOrderDate(),
+                saved.getStatus(),
+                saved.getType(),
+                saved.getCustomer().getCustomerName(),
+                saved.getCustomer().getAddress(),
+                saved.getCustomer().getAge(),
+                saved.getCustomer(),
+                saved.getOrderSafes().stream()
+                        .map(os -> new OrderProductDTO(os.getProduct().getProductId(), os.getQuantityOrdered()))
+                        .toList()
+        );
+
     }
 
     //SALES CHANGE STATUS TO PAYED -> DECREASE THE NUMBER OF STOCK OF THE PRODUCTS ORDER

@@ -12,12 +12,13 @@ import java.util.List;
 
 import static jakarta.persistence.FetchType.EAGER;
 
+@Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-public class User {
+public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

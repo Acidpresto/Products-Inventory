@@ -2,6 +2,7 @@ package com.ironhack.products_inventory.service;
 
 import com.ironhack.products_inventory.model.User;
 import com.ironhack.products_inventory.repository.UserRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Getter
 @Slf4j
 public class UserService implements UserDetailsService {
 
@@ -43,7 +45,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
     public User saveUser(User user) {
         log.info("Saving new user {} to the database", user.getName());
         // todo username make it UNIQUE
@@ -59,5 +60,11 @@ public class UserService implements UserDetailsService {
     public List<User> getUsers() {
         log.info("Fetching all users");
         return userRepository.findAll();
+    }
+
+    public void saveUserIfNotExists(User user) {
+        if (userRepository.findByUsername(user.getUsername()) == null) {
+            userRepository.save(user);
+        }
     }
 }

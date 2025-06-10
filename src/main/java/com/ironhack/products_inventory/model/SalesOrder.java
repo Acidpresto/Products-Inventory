@@ -2,9 +2,7 @@ package com.ironhack.products_inventory.model;
 
 import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.enums.OrderStatus;
-import jakarta.persistence.Access;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,18 +19,14 @@ import java.util.List;
 @Entity
 @PrimaryKeyJoinColumn(name = "order_id")
 public class SalesOrder extends Order {
-    @NotBlank
-    private String customerName;
-    private String customerAddress;
 
-    public SalesOrder(LocalDate orderDate, OrderStatus status, OrderType origin, List<OrderSafe> orderSafes, String customerName, String customerAddress) {
+    public SalesOrder(LocalDate orderDate, OrderStatus status, OrderType origin, List<OrderSafe> orderSafes, Customer customer) {
         super(orderDate, status, origin, orderSafes);
-        this.customerName = customerName;
-        this.customerAddress = customerAddress;
+        this.customer = customer;
     }
 
-    @Override
-    public String getDisplayId(){
-        return "S" + getOrderId();
-    }
+    @ManyToOne
+    @JoinColumn(name = "cutomer_id")
+    private Customer customer;
+
 }

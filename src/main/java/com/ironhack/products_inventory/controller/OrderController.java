@@ -37,19 +37,8 @@ public class OrderController {
 
     @PutMapping("/new/purchase")
     public ResponseEntity<PurchaseOrderDTO> createPurchaseOrder(@Valid @RequestBody PurchaseOrderDTO dto) {
-        PurchaseOrder created = orderService.createPurchaseOrder(dto);
-
-        PurchaseOrderDTO response = new PurchaseOrderDTO(
-                created.getOrderId(),
-                created.getOrderDate(),
-                created.getStatus(),
-                created.getType(),
-                created.getSupplierName(),
-                created.getOrderSafes().stream().map(os -> new OrderProductDTO(
-                        os.getProduct().getProductId(),
-                        os.getQuantityOrdered()
-                )).toList());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        PurchaseOrderDTO response = orderService.createPurchaseOrderDTO(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);//TODO REVIEW
     }
 
 
@@ -66,21 +55,10 @@ public class OrderController {
 
 
     @PutMapping("/new/sales")
-    public ResponseEntity<SalesOrderDTO> createSalesOrder(@Valid @RequestBody SalesOrderDTO dto) {
-        SalesOrder created = orderService.createSalesOrder(dto);
-
-        SalesOrderDTO response = new SalesOrderDTO(
-                created.getOrderId(),
-                created.getOrderDate(),
-                created.getStatus(),
-                created.getType(),
-                created.getCustomerName(),
-                created.getCustomerAddress(),
-                created.getOrderSafes().stream().map(os-> new OrderProductDTO(
-                        os.getProduct().getProductId(),
-                        os.getQuantityOrdered()
-                )).toList());
+    public ResponseEntity<SalesOrderDTO> createSalesOrderDTO(@Valid @RequestBody SalesOrderDTO dto) {
+        SalesOrderDTO response = orderService.createSalesOrderDTO(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
     }
 
 }

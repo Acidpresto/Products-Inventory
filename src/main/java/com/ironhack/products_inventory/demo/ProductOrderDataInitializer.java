@@ -1,9 +1,10 @@
-package com.ironhack.products_inventory;
+package com.ironhack.products_inventory.demo;
 
 import com.ironhack.products_inventory.model.*;
-import com.ironhack.products_inventory.repository.ProductRepository;
-import com.ironhack.products_inventory.repository.PurchaseOrderRepository;
-import com.ironhack.products_inventory.repository.SalesOrderRepository;
+import com.ironhack.products_inventory.repository.*;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,13 +15,24 @@ import java.util.List;
 import static com.ironhack.products_inventory.enums.OrderStatus.PENDING_PAYMENT;
 import static com.ironhack.products_inventory.enums.OrderType.PURCHASE;
 import static com.ironhack.products_inventory.enums.OrderType.SALES;
-import static com.ironhack.products_inventory.enums.OrderStatus.PAYED;
-
+@Slf4j
 @Configuration
-public class ProductDataInitalizer {
+public class ProductOrderDataInitializer {
 
     @Bean
-    CommandLineRunner productInitalizer(ProductRepository productsRepository, PurchaseOrderRepository purchaseOrderRepository, SalesOrderRepository salesOrderRepository) {        return args -> {
+    CommandLineRunner productInitializer(
+            ProductRepository productsRepository,
+            PurchaseOrderRepository purchaseOrderRepository,
+            SalesOrderRepository salesOrderRepository,
+            UsersDataLoader usersDataLoader)
+
+        { return args -> {
+
+            //FETCH 2 SUPPLIERS AND 1 CUSTOMER
+            Supplier supplier1 = usersDataLoader.getSupplier1();
+            Supplier supplier2 = usersDataLoader.getSupplier2();
+            Customer customer1 = usersDataLoader.getCustomer1();
+
 
             // HELLO! HERE IT IS THE INITIAL PRODUCTS WE HAVE ON OUR WAREHOUSE:
             Product chair1 = new Product(null, "Standard Chair", "Comfortable wooden study chair", 25, 1, 50, null);
@@ -30,6 +42,8 @@ public class ProductDataInitalizer {
             Product chair5 = new Product(null, "Lounge Chair", "Modern fabric lounge chair", 220, 1, 25, null);
 
             productsRepository.saveAll(List.of(chair1, chair2, chair3, chair4, chair5));
+
+
 
             //WE CHOSE TWO PRODUCTS AVAILABLE TO SUPPLY
             OrderSafe op1 = new OrderSafe();
@@ -41,8 +55,8 @@ public class ProductDataInitalizer {
             op2.setQuantityOrdered(5);
 
            //THAT'S AND ORDER OF PURCHASE
-            PurchaseOrder porder1 = new PurchaseOrder(LocalDate.now(), PENDING_PAYMENT, PURCHASE, List.of(op1, op2), "IKAE");
-            //WE ASSIGN EACH ORDERSAFE TO THE PURCHASE
+            PurchaseOrder porder1 = new PurchaseOrder(LocalDate.now(), PENDING_PAYMENT, PURCHASE, List.of(op1, op2), supplier1);
+            //WE ASSIGN EACH ORDER-SAFE TO THE PURCHASE
             op1.setOrder(porder1);
             op2.setOrder(porder1);
             //SAVE THE PURCHASE
@@ -52,7 +66,7 @@ public class ProductDataInitalizer {
             OrderSafe op3 = new OrderSafe();
             op3.setProduct(chair4);
             op3.setQuantityOrdered(5);
-            PurchaseOrder porder2 = new PurchaseOrder(LocalDate.now(), PENDING_PAYMENT, PURCHASE, List.of(op3), "Carpinterie Ferrer" );
+            PurchaseOrder porder2 = new PurchaseOrder(LocalDate.now(), PENDING_PAYMENT, PURCHASE, List.of(op3), supplier2);
             op3.setOrder(porder2);
             purchaseOrderRepository.save(porder2);
 
@@ -69,17 +83,16 @@ public class ProductDataInitalizer {
             os3.setProduct(chair2);
             os3.setQuantityOrdered(5);
 
-            SalesOrder sorder1 = new SalesOrder(LocalDate.now(), PENDING_PAYMENT, SALES, List.of(os1, os2, os3), "Marco", "C.Major, 12");
+            SalesOrder sorder1 = new SalesOrder(LocalDate.now(), PENDING_PAYMENT, SALES, List.of(os1, os2, os3), customer1);
             os1.setOrder(sorder1);
             os2.setOrder(sorder1);
             os3.setOrder(sorder1);
 
             salesOrderRepository.save(sorder1);
 
-            System.out.println("🪑 Sample of Products, Purchase order and Sales Order inserted.");
+            log.info("🪑 Sample of Products, Purchase order and Sales Order inserted.");
         };
 
     }
-
 
 }

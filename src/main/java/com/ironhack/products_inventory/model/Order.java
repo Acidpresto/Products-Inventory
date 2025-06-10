@@ -39,8 +39,6 @@ public abstract class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderSafe> orderSafes;
 
-    //WE CREATE AN ABSTRACT METHOD TO RETURN THE PREFIXED ID: to differentiate between Sales(S) and Purchases(P)
-    public abstract String getDisplayId();
 
     public Order(LocalDate orderDate, OrderStatus status, OrderType origin, List<OrderSafe> orderSafes) {
         this.orderDate = orderDate;
