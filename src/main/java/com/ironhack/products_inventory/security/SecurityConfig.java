@@ -41,8 +41,6 @@ public class SecurityConfig {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
 
-        // Configura los accesos públicos, privados y por rol
-        // <---- aquí es donde añadiré mis endpoints, si son públicos o no y con qué roles puedo acceder a los privados
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/login/**").permitAll()
                 .requestMatchers("api/greet").permitAll()

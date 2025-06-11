@@ -29,13 +29,15 @@ public class RoleService {
         log.info("Adding role {} to user {}", roleName, username);
 
         User user = userRepository.findByUsername(username);
-        /* todo not found if (user == null) {
-            throw new RuntimeException("User " + username + " already exists");
-        }*/
+        // IF WE WANT THAT ONE USER HAVE A UNIQUE ROLE --- (THAT'S NOT OUR CASE, LISA & MARC ARE USERS AND ADMIN)
+        // if (user != null) {
+        // throw new RuntimeException("User with name " + username + " already exists");
+        //        }
+
         Role role = roleRepository.findByName(roleName);
-        /* todo que pete si no lo encutnra, not found if (role == null) {
-            throw new RuntimeException("Role " + roleName + " does not exist");
-        }*/
+        if (role == null) {
+            throw new RuntimeException("Role with name " + roleName + " does not exist");
+        }
 
         List<Role> userRoles = user.getRoles();
         userRoles.add(role);
@@ -43,11 +45,6 @@ public class RoleService {
         userRepository.save(user);
     }
 
-    public void saveRoleIfNotExists(Role role) {
-        if (roleRepository.findByName(role.getName()) == null) {
-            roleRepository.save(role);
-        }
-    }
 }
 
 

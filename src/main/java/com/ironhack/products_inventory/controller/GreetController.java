@@ -24,3 +24,4 @@ public class GreetController {
         return "Hello, " + username;
     }
 }
+//Todo delete this class is for testing proposes

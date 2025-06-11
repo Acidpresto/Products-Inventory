@@ -43,5 +43,4 @@ public abstract class User {
         this.username = username;
         this.password = password;
     }
-    //TODO with ID and enum: supplier or customer, list of orders. FER AL FINAL
 }

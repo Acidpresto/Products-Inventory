@@ -27,10 +27,10 @@ public class Supplier extends User {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private List<PurchaseOrder> purchaseOrders;
 
-    public Supplier(String companyName, String companyAddress) {
-        this.companyName = companyName;
-        this.companyAddress = companyAddress;
-    }
+  //  public Supplier(String companyName, String companyAddress) {
+    //    this.companyName = companyName;
+      //  this.companyAddress = companyAddress;
+   // }
 
     public Supplier(String name, String username, String password, String companyName, String companyAddress) {
         super(name, username, password);
@@ -38,3 +38,4 @@ public class Supplier extends User {
         this.companyAddress = companyAddress;
     }
 }
+//TODO review controllers
