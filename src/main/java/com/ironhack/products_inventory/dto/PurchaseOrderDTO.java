@@ -19,7 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PurchaseOrderDTO {
     //WE CAN'T EDIT THE ID
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -37,12 +36,12 @@ public class PurchaseOrderDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OrderType origin = OrderType.PURCHASE;
 
-    @NotBlank
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotNull
     private Long supplierId;
 
     //WE ONLY USE IT ON THE ANSWER
-    private String supplierName;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String companyName;
 
     @NotEmpty
     private List<OrderProductDTO> products;
@@ -52,12 +51,13 @@ public class PurchaseOrderDTO {
         this.status = status;
     }
 
-    public PurchaseOrderDTO(Long id, LocalDate orderDate, OrderStatus status, OrderType origin, String supplierName, List<OrderProductDTO> products) {
+
+    public PurchaseOrderDTO(Long id, LocalDate orderDate, OrderStatus status, OrderType origin, String companyName, List<OrderProductDTO> products) {
         this.id = id;
         this.orderDate = orderDate;
         this.status = status;
         this.origin = origin;
-        this.supplierName = supplierName;
+        this.companyName = companyName;
         this.products = products;
     }
 }

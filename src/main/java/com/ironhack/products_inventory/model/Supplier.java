@@ -16,9 +16,6 @@ import java.util.List;
 @Setter
 public class Supplier extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     private String companyName;
     private String companyAddress;
@@ -27,10 +24,10 @@ public class Supplier extends User {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private List<PurchaseOrder> purchaseOrders;
 
-  //  public Supplier(String companyName, String companyAddress) {
-    //    this.companyName = companyName;
-      //  this.companyAddress = companyAddress;
-   // }
+    public Supplier(String companyName, String companyAddress) {
+        this.companyName = companyName;
+        this.companyAddress = companyAddress;
+    }
 
     public Supplier(String name, String username, String password, String companyName, String companyAddress) {
         super(name, username, password);

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,6 +42,12 @@ public class OrderService {
         this.supplierRepository = supplierRepository;
     }
 
+    //TEST method
+    private Supplier getSupplierById(Long id) {
+        return supplierRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invalid supplier ID: " + id));
+    }
+
     //GET PURCHASE ORDERS
     public List<PurchaseOrderDTO> findPurchaseOrders() {
         return purchaseOrderRepository.findAll().stream().map(p -> {
@@ -50,12 +57,21 @@ public class OrderService {
                             orderSafe.getProduct().getProductName(),
                             orderSafe.getQuantityOrdered()))
                             .collect(Collectors.toList());
-                    return new PurchaseOrderDTO(
+
+                        // Handle supplier info safely
+                        Long supplierId = Optional.ofNullable(p.getSupplier())
+                                .map(Supplier::getId)
+                                .orElse(null);
+
+                        String supplierName = Optional.ofNullable(p.getSupplier())
+                        .map(Supplier::getCompanyName).orElse("No Supplier");
+
+                        return new PurchaseOrderDTO(
                         p.getOrderId(),
                         p.getOrderDate(),
                         p.getStatus(),
                         p.getType(),
-                        p.getSupplier().getCompanyName(),
+                        supplierName,
                         products);
         }).collect(Collectors.toList());
     }

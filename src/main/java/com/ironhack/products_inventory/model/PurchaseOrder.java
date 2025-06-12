@@ -2,10 +2,7 @@ package com.ironhack.products_inventory.model;
 
 import com.ironhack.products_inventory.enums.OrderType;
 import com.ironhack.products_inventory.enums.OrderStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,8 +16,6 @@ import java.util.List;
 @Setter
 @PrimaryKeyJoinColumn(name = "order_id")
 public class PurchaseOrder extends Order {
-
-    private String supplierName;
 
     public PurchaseOrder(LocalDate orderDate, OrderStatus status, OrderType origin, List<OrderSafe> orderSafes, Supplier supplier) {
         super(orderDate, status, origin, orderSafes);

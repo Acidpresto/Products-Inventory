@@ -24,8 +24,8 @@ public class  Customer extends User{
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<SalesOrder> salesOrders;
 
-    public Customer(String firstName, String address, Integer age) {
-        this.customerName = firstName;
+    public Customer(String customerName, String address, Integer age) {
+        this.customerName = customerName;
         this.address = address;
         this.age = age;
     }

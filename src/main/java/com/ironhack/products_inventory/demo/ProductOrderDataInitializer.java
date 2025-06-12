@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,14 +25,16 @@ public class ProductOrderDataInitializer {
             ProductRepository productsRepository,
             PurchaseOrderRepository purchaseOrderRepository,
             SalesOrderRepository salesOrderRepository,
-            UsersDataLoader usersDataLoader)
+            SupplierRepository supplierRepository,
+            CustomerRepository customerRepository
+            )
 
         { return args -> {
 
             //FETCH 2 SUPPLIERS AND 1 CUSTOMER
-            Supplier supplier1 = usersDataLoader.getSupplier1();
-            Supplier supplier2 = usersDataLoader.getSupplier2();
-            Customer customer1 = usersDataLoader.getCustomer1();
+            Supplier supplier1 = supplierRepository.findByCompanyName("Marc el fuster");
+            Supplier supplier2 = supplierRepository.findByCompanyName("Matias el planxista");
+            Customer customer1 = customerRepository.findByCustomerName("Marco");
 
 
             // HELLO! HERE IT IS THE INITIAL PRODUCTS WE HAVE ON OUR WAREHOUSE:
