@@ -51,12 +51,12 @@ public class PurchaseOrderDTO {
         this.status = status;
     }
 
-
-    public PurchaseOrderDTO(Long id, LocalDate orderDate, OrderStatus status, OrderType origin, String companyName, List<OrderProductDTO> products) {
+    public PurchaseOrderDTO(Long id, LocalDate orderDate, OrderStatus status, OrderType origin, Long supplierId, String companyName, List<OrderProductDTO> products) {
         this.id = id;
         this.orderDate = orderDate;
         this.status = status;
         this.origin = origin;
+        this.supplierId = supplierId;
         this.companyName = companyName;
         this.products = products;
     }

@@ -42,11 +42,6 @@ public class OrderService {
         this.supplierRepository = supplierRepository;
     }
 
-    //TEST method
-    private Supplier getSupplierById(Long id) {
-        return supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invalid supplier ID: " + id));
-    }
 
     //GET PURCHASE ORDERS
     public List<PurchaseOrderDTO> findPurchaseOrders() {
@@ -58,9 +53,9 @@ public class OrderService {
                             orderSafe.getQuantityOrdered()))
                             .collect(Collectors.toList());
 
-                        // Handle supplier info safely
+                        //HANDLE THE SUPPLIER INFO SAFE
                         Long supplierId = Optional.ofNullable(p.getSupplier())
-                                .map(Supplier::getId)
+                                .map(Supplier::getUserId)
                                 .orElse(null);
 
                         String supplierName = Optional.ofNullable(p.getSupplier())
@@ -71,6 +66,7 @@ public class OrderService {
                         p.getOrderDate(),
                         p.getStatus(),
                         p.getType(),
+                        supplierId,
                         supplierName,
                         products);
         }).collect(Collectors.toList());
@@ -111,6 +107,7 @@ public class OrderService {
                 saved.getOrderDate(),
                 saved.getStatus(),
                 saved.getType(),
+                saved.getSupplier().getUserId(),
                 saved.getSupplier().getCompanyName(),
                 saved.getOrderSafes().stream().map(os -> new OrderProductDTO(
                         os.getProduct().getProductId(),
@@ -151,7 +148,7 @@ public class OrderService {
 
     }
 
-    //GET PURCHASE ORDERS
+    //GET SALES ORDERS
     public List<SalesOrderDTO> findSaleOrders() {
         return salesOrderRepository.findAll().stream().map(p -> {
             List<OrderProductDTO> products = p.getOrderSafes().stream().map(orderSafe ->
@@ -160,16 +157,21 @@ public class OrderService {
                                     orderSafe.getProduct().getProductName(),
                                     orderSafe.getQuantityOrdered()))
                     .collect(Collectors.toList());
+
+
+
             return new SalesOrderDTO(
                     p.getOrderId(),
                     p.getOrderDate(),
                     p.getStatus(),
                     p.getType(),
-                    p.getCustomer().getId(),
+                    p.getCustomer().getName(),
+                    p.getCustomer().getAddress(),
+                    p.getCustomer(),
                     products);
         }).collect(Collectors.toList());
     }
-
+//TODO keep testing
     //CREATE A NEW SALES ORDER
     public SalesOrderDTO createSalesOrderDTO(SalesOrderDTO dto) {
         //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE. AND VALIDATE ID

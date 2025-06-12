@@ -55,13 +55,21 @@ public class SalesOrderDTO {
         this.products = products;
     }
 
-    public SalesOrderDTO(Long id, LocalDate orderDate, OrderStatus status, OrderType origin, Long customerId, List<OrderProductDTO> products) {
+    public SalesOrderDTO(Long id, LocalDate orderDate, OrderStatus status, OrderType origin,
+                         String customerFirstName, String customerAddress,
+                         User customerUser, List<OrderProductDTO> products) {
         this.id = id;
         this.orderDate = orderDate;
         this.status = status;
         this.origin = origin;
-        this.customerId = customerId;
+        this.customerFirstName = customerFirstName;
+        this.customerAddress = customerAddress;
+        this.customerUser = customerUser;
         this.products = products;
     }
+
+
+
+
 }
 

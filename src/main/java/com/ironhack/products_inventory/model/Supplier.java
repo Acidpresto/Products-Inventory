@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 public class Supplier extends User {
 
-
     private String companyName;
     private String companyAddress;
 
