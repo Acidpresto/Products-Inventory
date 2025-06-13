@@ -60,4 +60,6 @@ public class PurchaseOrderDTO {
         this.companyName = companyName;
         this.products = products;
     }
+
+
 }

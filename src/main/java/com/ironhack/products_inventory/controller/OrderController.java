@@ -1,9 +1,6 @@
 package com.ironhack.products_inventory.controller;
 
-import com.ironhack.products_inventory.dto.OrderProductDTO;
-import com.ironhack.products_inventory.dto.ProductDTO;
-import com.ironhack.products_inventory.dto.PurchaseOrderDTO;
-import com.ironhack.products_inventory.dto.SalesOrderDTO;
+import com.ironhack.products_inventory.dto.*;
 import com.ironhack.products_inventory.model.PurchaseOrder;
 import com.ironhack.products_inventory.model.SalesOrder;
 import com.ironhack.products_inventory.service.OrderService;
@@ -30,15 +27,15 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/purchase/status")
-    public ResponseEntity<PurchaseOrderDTO> updateOrderStatus(@PathVariable Long id, @RequestBody PurchaseOrderDTO dto) {
-        PurchaseOrder updated = orderService.updatePurchaseStatus(id, dto.getStatus());
-        return ResponseEntity.ok(new PurchaseOrderDTO(updated.getOrderId(), updated.getStatus()));
+    public ResponseEntity<String> updateStatus(@PathVariable Long id, @RequestBody UpdateStatusDTO dto) {
+        String resultMessage = orderService.updatePurchaseStatus(id, dto.getStatus());
+        return ResponseEntity.ok(resultMessage);
     }
 
     @PutMapping("/new/purchase")
     public ResponseEntity<PurchaseOrderDTO> createPurchaseOrder(@Valid @RequestBody PurchaseOrderDTO dto) {
         PurchaseOrderDTO response = orderService.createPurchaseOrderDTO(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);//TODO REVIEW
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 

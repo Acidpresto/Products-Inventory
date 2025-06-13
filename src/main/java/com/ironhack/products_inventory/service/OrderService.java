@@ -88,7 +88,7 @@ public class OrderService {
 
         //CREATE A NEW PURCHASE-ORDER FROM DTO VALUES
         Supplier supplier = supplierRepository.findById(dto.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("Invalid customer ID: " + dto.getSupplierId()));
+                .orElseThrow(() -> new RuntimeException("Invalid user ID: " + dto.getSupplierId()));
 
         PurchaseOrder order = new PurchaseOrder(
                 LocalDate.now(),
@@ -111,42 +111,108 @@ public class OrderService {
                 saved.getSupplier().getCompanyName(),
                 saved.getOrderSafes().stream().map(os -> new OrderProductDTO(
                         os.getProduct().getProductId(),
+                        os.getProduct().getProductName(),
                         os.getQuantityOrdered())).toList()
         );
 
     }
 
     //PURCHASE CHANGE STATUS TO PAYED -> INCREASE THE NUMBER OF STOCK OF THE PRODUCTS ORDER
-    @Transactional //TO  ENSURE ALL PRODUCT HAVE SUCCESS IF NO REVERT BACK
-    public PurchaseOrder updatePurchaseStatus(Long orderId, OrderStatus newStatus) {
+    @Transactional // TODO NOT USE!! ENSURE ALL PRODUCT HAVE SUCCESS OR REVERT BACK
+    public PurchaseOrderDTO updatePurchaseStatus1(Long orderId, OrderStatus newStatus) {
         PurchaseOrder order = purchaseOrderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundExcpetion("Order not found with ID " + orderId));
 
         if (order.getType() == OrderType.PURCHASE
-            &&  newStatus == OrderStatus.PAYED
-            && order.getStatus() != OrderStatus.PAYED){
-            log.info("Order status updated to " + newStatus);
+                && newStatus == OrderStatus.PAYED
+                && order.getStatus() != OrderStatus.PAYED) {
 
-            LocalDateTime date = LocalDateTime.now();
-// variable localDate.now()
+            log.info("Order status updated to " + newStatus);
+            order.setStatus(newStatus);
+
             for (OrderSafe orderSafe : order.getOrderSafes()) {
                 Product product = orderSafe.getProduct();
                 Integer quantityOrdered = orderSafe.getQuantityOrdered();
 
-                //UPDATE STOCK
+                // UPDATE STOCK
                 product.setStock(product.getStock() + quantityOrdered);
                 productRepository.save(product);
             }
 
- // if localDate variable han pasado -- para la demo diría 1 min/ 30 seg -- actualizas el estado 1º a uno y haces un log en terminal en cada camnio
-        log.info("Order status updated to " + newStatus);
+            // Save order after updating stock
+            PurchaseOrder savedOrder = purchaseOrderRepository.save(order);
+
+            return new PurchaseOrderDTO(
+                    savedOrder.getOrderId(),
+                    savedOrder.getOrderDate(),
+                    savedOrder.getStatus(),
+                    savedOrder.getType(),
+                    savedOrder.getSupplier() != null ? savedOrder.getSupplier().getUserId() : null,
+                    savedOrder.getSupplier() != null ? savedOrder.getSupplier().getCompanyName() : null,
+                    savedOrder.getOrderSafes().stream()
+                            .map(os -> new OrderProductDTO(
+                                    os.getProduct().getProductId(),
+                                    os.getProduct().getProductName(),
+                                    os.getQuantityOrdered()))
+                            .toList()
+            );
+        }
+
+        // If order is not PURCHASE or already PAYED, just update the status
+        order.setStatus(newStatus);
+        PurchaseOrder savedOrder = purchaseOrderRepository.save(order);
+
+        return new PurchaseOrderDTO(
+                savedOrder.getOrderId(),
+                savedOrder.getOrderDate(),
+                savedOrder.getStatus(),
+                savedOrder.getType(),
+                savedOrder.getSupplier() != null ? savedOrder.getSupplier().getUserId() : null,
+                savedOrder.getSupplier() != null ? savedOrder.getSupplier().getCompanyName() : null,
+                savedOrder.getOrderSafes().stream()
+                        .map(os -> new OrderProductDTO(
+                                os.getProduct().getProductId(),
+                                os.getProduct().getProductName(),
+                                os.getQuantityOrdered()))
+                        .toList()
+        );
+    }
+
+    @Transactional
+    public String updatePurchaseStatus(Long orderId, OrderStatus newStatus) {
+        PurchaseOrder order = purchaseOrderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundExcpetion("Order not found with ID " + orderId));
+
+        if (order.getType() != OrderType.PURCHASE) {
+            throw new IllegalArgumentException("This operation only applies to PURCHASE orders.");
+        }
+
+        if (order.getStatus() == newStatus) {
+            log.info("Order " + orderId + " already has status " + newStatus);
+            return "Order already has status " + newStatus;
+        }
+
+        if (newStatus == OrderStatus.PAYED) {
+            for (OrderSafe orderSafe : order.getOrderSafes()) {
+                Product product = orderSafe.getProduct();
+                int quantity = orderSafe.getQuantityOrdered();
+                product.setStock(product.getStock() + quantity);
+                productRepository.save(product);
+
+                log.info("Stock updated for product: " + product.getProductName() + ", +" + quantity);
+            }
         }
 
         order.setStatus(newStatus);
-        return purchaseOrderRepository.save(order);
+        purchaseOrderRepository.save(order);
+        log.info("Order status changed to " + newStatus);
 
 
+        String message = "Order " + orderId + " has change the status to " + newStatus ;
+        log.info(message);
+        return message;
     }
+
 
     //GET SALES ORDERS
     public List<SalesOrderDTO> findSaleOrders() {
@@ -226,7 +292,10 @@ public class OrderService {
                 saved.getCustomer().getAddress(),
                 saved.getCustomer().getAge(),
                 saved.getOrderSafes().stream()
-                        .map(os -> new OrderProductDTO(os.getProduct().getProductId(), os.getQuantityOrdered()))
+                        .map(os -> new OrderProductDTO(
+                                os.getProduct().getProductId(),
+                                os.getProduct().getProductName(),
+                                os.getQuantityOrdered()))
                         .toList()
         );
 
