@@ -151,6 +151,7 @@ public class OrderService {
     //GET SALES ORDERS
     public List<SalesOrderDTO> findSaleOrders() {
         return salesOrderRepository.findAll().stream().map(p -> {
+            //RECEIVE THE PRODUCTS
             List<OrderProductDTO> products = p.getOrderSafes().stream().map(orderSafe ->
                             new OrderProductDTO(
                                     orderSafe.getProduct().getProductId(),
@@ -158,20 +159,36 @@ public class OrderService {
                                     orderSafe.getQuantityOrdered()))
                     .collect(Collectors.toList());
 
+                    //HANDLE THE CUSTOMER INFO SAFE
+                   Long customerId = Optional.ofNullable(p.getCustomer())
+                           .map(Customer::getUserId)
+                            .orElse(null);
 
+                   String customerName = Optional.ofNullable(p.getCustomer())
+                    .map(Customer::getCustomerName)
+                    .orElse("No customer");
+
+                    Integer customerAge = Optional.ofNullable(p.getCustomer())
+                    .map(Customer::getAge)
+                    .orElse(null);
+
+                    String customerAddress = Optional.ofNullable(p.getCustomer())
+                    .map(Customer::getAddress)
+                    .orElse("No customer");
 
             return new SalesOrderDTO(
                     p.getOrderId(),
                     p.getOrderDate(),
                     p.getStatus(),
                     p.getType(),
-                    p.getCustomer().getName(),
-                    p.getCustomer().getAddress(),
-                    p.getCustomer(),
+                    customerId,
+                    customerName,
+                    customerAddress,
+                    customerAge,
                     products);
         }).collect(Collectors.toList());
     }
-//TODO keep testing
+
     //CREATE A NEW SALES ORDER
     public SalesOrderDTO createSalesOrderDTO(SalesOrderDTO dto) {
         //FIRST WE CONVERT THE DTO PRODUCTS TO ORDER-SAFE. AND VALIDATE ID
@@ -204,10 +221,10 @@ public class OrderService {
                 saved.getOrderDate(),
                 saved.getStatus(),
                 saved.getType(),
+                saved.getCustomer().getUserId(),
                 saved.getCustomer().getCustomerName(),
                 saved.getCustomer().getAddress(),
                 saved.getCustomer().getAge(),
-                saved.getCustomer(),
                 saved.getOrderSafes().stream()
                         .map(os -> new OrderProductDTO(os.getProduct().getProductId(), os.getQuantityOrdered()))
                         .toList()
