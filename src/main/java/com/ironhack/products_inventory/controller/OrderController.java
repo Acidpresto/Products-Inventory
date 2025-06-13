@@ -27,7 +27,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/purchase/status")
-    public ResponseEntity<String> updateStatus(@PathVariable Long id, @RequestBody UpdateStatusDTO dto) {
+    public ResponseEntity<String> updatePurchaseStatus(@PathVariable Long id, @RequestBody UpdateStatusDTO dto) {
         String resultMessage = orderService.updatePurchaseStatus(id, dto.getStatus());
         return ResponseEntity.ok(resultMessage);
     }
@@ -45,9 +45,9 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/sales/status")
-    public ResponseEntity<SalesOrderDTO> updateOrderStatus2(@PathVariable Long id, @RequestBody SalesOrderDTO dto) {
-        SalesOrder updated = orderService.updateSalesStatus(id, dto.getStatus());
-        return ResponseEntity.ok(new SalesOrderDTO(updated.getOrderId(), updated.getStatus()));
+    public ResponseEntity<String> updateSalesStatus(@PathVariable Long id, @RequestBody UpdateStatusDTO dto) {
+        String resultMessage = orderService.updateSalesStatus(id, dto.getStatus());
+        return ResponseEntity.ok(resultMessage);
     }
 
 

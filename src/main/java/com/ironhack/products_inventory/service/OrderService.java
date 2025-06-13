@@ -118,67 +118,7 @@ public class OrderService {
     }
 
     //PURCHASE CHANGE STATUS TO PAYED -> INCREASE THE NUMBER OF STOCK OF THE PRODUCTS ORDER
-    @Transactional // TODO NOT USE!! ENSURE ALL PRODUCT HAVE SUCCESS OR REVERT BACK
-    public PurchaseOrderDTO updatePurchaseStatus1(Long orderId, OrderStatus newStatus) {
-        PurchaseOrder order = purchaseOrderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundExcpetion("Order not found with ID " + orderId));
-
-        if (order.getType() == OrderType.PURCHASE
-                && newStatus == OrderStatus.PAYED
-                && order.getStatus() != OrderStatus.PAYED) {
-
-            log.info("Order status updated to " + newStatus);
-            order.setStatus(newStatus);
-
-            for (OrderSafe orderSafe : order.getOrderSafes()) {
-                Product product = orderSafe.getProduct();
-                Integer quantityOrdered = orderSafe.getQuantityOrdered();
-
-                // UPDATE STOCK
-                product.setStock(product.getStock() + quantityOrdered);
-                productRepository.save(product);
-            }
-
-            // Save order after updating stock
-            PurchaseOrder savedOrder = purchaseOrderRepository.save(order);
-
-            return new PurchaseOrderDTO(
-                    savedOrder.getOrderId(),
-                    savedOrder.getOrderDate(),
-                    savedOrder.getStatus(),
-                    savedOrder.getType(),
-                    savedOrder.getSupplier() != null ? savedOrder.getSupplier().getUserId() : null,
-                    savedOrder.getSupplier() != null ? savedOrder.getSupplier().getCompanyName() : null,
-                    savedOrder.getOrderSafes().stream()
-                            .map(os -> new OrderProductDTO(
-                                    os.getProduct().getProductId(),
-                                    os.getProduct().getProductName(),
-                                    os.getQuantityOrdered()))
-                            .toList()
-            );
-        }
-
-        // If order is not PURCHASE or already PAYED, just update the status
-        order.setStatus(newStatus);
-        PurchaseOrder savedOrder = purchaseOrderRepository.save(order);
-
-        return new PurchaseOrderDTO(
-                savedOrder.getOrderId(),
-                savedOrder.getOrderDate(),
-                savedOrder.getStatus(),
-                savedOrder.getType(),
-                savedOrder.getSupplier() != null ? savedOrder.getSupplier().getUserId() : null,
-                savedOrder.getSupplier() != null ? savedOrder.getSupplier().getCompanyName() : null,
-                savedOrder.getOrderSafes().stream()
-                        .map(os -> new OrderProductDTO(
-                                os.getProduct().getProductId(),
-                                os.getProduct().getProductName(),
-                                os.getQuantityOrdered()))
-                        .toList()
-        );
-    }
-
-    @Transactional
+    @Transactional // TO ENSURE ALL PRODUCT HAVE SUCCESS, IF NO REVERT BACK
     public String updatePurchaseStatus(Long orderId, OrderStatus newStatus) {
         PurchaseOrder order = purchaseOrderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundExcpetion("Order not found with ID " + orderId));
@@ -212,7 +152,6 @@ public class OrderService {
         log.info(message);
         return message;
     }
-
 
     //GET SALES ORDERS
     public List<SalesOrderDTO> findSaleOrders() {
@@ -303,28 +242,38 @@ public class OrderService {
 
     //SALES CHANGE STATUS TO PAYED -> DECREASE THE NUMBER OF STOCK OF THE PRODUCTS ORDER
     @Transactional
-    public SalesOrder updateSalesStatus(Long orderId, OrderStatus newStatus) {
+    public String updateSalesStatus(Long orderId, OrderStatus newStatus) {
         SalesOrder order = salesOrderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundExcpetion("Order not found with ID " + orderId));
 
-        if (order.getType() == OrderType.SALES
-                && newStatus == OrderStatus.PAYED
-                && order.getStatus() != OrderStatus.PAYED) {
+        if (order.getType() != OrderType.SALES) {
+            throw new IllegalArgumentException("This operation only applies to PURCHASE orders.");
+        }
 
+        if (order.getStatus() == newStatus) {
+            log.info("Order " + orderId + " already has status " + newStatus);
+            return "Order already has status " + newStatus;
+        }
+
+        if (newStatus == OrderStatus.PAYED) {
             for (OrderSafe orderSafe : order.getOrderSafes()) {
                 Product product = orderSafe.getProduct();
-                Integer quantityOrdered = orderSafe.getQuantityOrdered();
-
-                //UPDATE STOCK
-                product.setStock(product.getStock() - quantityOrdered);
+                int quantity = orderSafe.getQuantityOrdered();
+                product.setStock(product.getStock() - quantity);
                 productRepository.save(product);
+
+                log.info("Stock updated for product: " + product.getProductName() + ", +" + quantity);
             }
         }
 
-
         order.setStatus(newStatus);
-        return salesOrderRepository.save(order);
+        salesOrderRepository.save(order);
+        log.info("Order status changed to " + newStatus);
 
+
+        String message = "Order " + orderId + " has change the status to " + newStatus ;
+        log.info(message);
+        return message;
     }
 
 }
