@@ -34,4 +34,3 @@ public class Supplier extends User {
         this.companyAddress = companyAddress;
     }
 }
-//TODO review controllers

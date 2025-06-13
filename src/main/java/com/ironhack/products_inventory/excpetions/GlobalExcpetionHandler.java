@@ -22,6 +22,10 @@ public class GlobalExcpetionHandler {
     public ResponseEntity<String> handleOrderNotFound(OrderNotFoundExcpetion ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+    @ExceptionHandler(UserNotFoundExcpetion.class)
+    public ResponseEntity<String> handleUserNotFound(UserNotFoundExcpetion ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
     @ExceptionHandler(DuplicateProductExcpetion.class)
     public ResponseEntity<String> handleDuplicateProduct(DuplicateProductExcpetion ex) {

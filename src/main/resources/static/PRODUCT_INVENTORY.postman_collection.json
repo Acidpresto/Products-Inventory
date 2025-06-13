@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "0ec92d06-b705-48fe-948e-de3877ebaa5b",
+		"name": "PRODUCT_INVENTORY",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43781345",
+		"_collection_link": "https://marcpedronpladevall.postman.co/workspace/IRONHACK---2025~432f337f-2e01-467e-99f7-da41f23846e1/collection/43781345-0ec92d06-b705-48fe-948e-de3877ebaa5b?action=share&source=collection_link&creator=43781345"
+	},
+	"item": [
+		{
+			"name": "ALL",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NAME CONTAINS",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products/name-contains?productName=Office",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"name-contains"
+					],
+					"query": [
+						{
+							"key": "productName",
+							"value": "Office"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ID",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EXACT NAME",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products/name?productName=Standard Chair",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"name"
+					],
+					"query": [
+						{
+							"key": "productName",
+							"value": "Standard Chair"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE BY ID",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products/delete/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"delete",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE BY ID",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1000,\n    \"productName\": \"Dining Chair\",\n    \"description\": \"Set of 4 wooden chairs, perfect for living rooms\",\n    \"price\": -4,\n    \"minQuantity\": 0,\n    \"stock\": 20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/products/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE NEW PRODUCT",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"productName\": \"\",\n        \"description\": \"\",\n        \"price\": 0,\n        \"minQuantity\": 0,\n        \"stock\": 0\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/products/new-product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"new-product"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-//TODO REVIEW
 List <Product> findByProductName(String productName);
 
 List<Product> findByProductNameContaining(String productName);

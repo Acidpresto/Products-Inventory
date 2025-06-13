@@ -32,7 +32,7 @@ public class OrderController {
         return ResponseEntity.ok(resultMessage);
     }
 
-    @PutMapping("/new/purchase")
+    @PostMapping("/new/purchase")
     public ResponseEntity<PurchaseOrderDTO> createPurchaseOrder(@Valid @RequestBody PurchaseOrderDTO dto) {
         PurchaseOrderDTO response = orderService.createPurchaseOrderDTO(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -51,7 +51,7 @@ public class OrderController {
     }
 
 
-    @PutMapping("/new/sales")
+    @PostMapping("/new/sales")
     public ResponseEntity<SalesOrderDTO> createSalesOrderDTO(@Valid @RequestBody SalesOrderDTO dto) {
         SalesOrderDTO response = orderService.createSalesOrderDTO(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

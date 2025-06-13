@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "8d42ab42-ed7a-43dc-8c57-ff578d42b5a8",
+		"name": "ORDER-PRODUCT USERS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43781345",
+		"_collection_link": "https://marcpedronpladevall.postman.co/workspace/IRONHACK---2025~432f337f-2e01-467e-99f7-da41f23846e1/collection/43781345-8d42ab42-ed7a-43dc-8c57-ff578d42b5a8?action=share&source=collection_link&creator=43781345"
+	},
+	"item": [
+		{
+			"name": "USER LOGIN",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huIiwiZXhwIjoxNzQ5NTM3NTIwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwicm9sZXMiOlsiUk9MRV9VU0VSIl19.FWCU8w9dDYUxsbqkGc5HxPl-mTc4l533miBNboUVrOA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"kevin\",\n  \"password\": \"1234\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADMIN LOGIN",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huIiwiZXhwIjoxNzQ5NTM3NTIwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwicm9sZXMiOlsiUk9MRV9VU0VSIl19.FWCU8w9dDYUxsbqkGc5HxPl-mTc4l533miBNboUVrOA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"lisa\",\n  \"password\": \"1234\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE NEW SUPPLIER",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huIiwiZXhwIjoxNzQ5NTM3NTIwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwicm9sZXMiOlsiUk9MRV9VU0VSIl19.FWCU8w9dDYUxsbqkGc5HxPl-mTc4l533miBNboUVrOA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"lisa\",\n  \"password\": \"1234\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FIND ALL USERS",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsaXNhIiwiZXhwIjoxNzQ5ODIwOTQ3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdfQ.E84RYDeycKNWNwPuNZ0WscLHivKoK1Rgn941fPLuDhA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huIiwiZXhwIjoxNzQ5NTM3NTIwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwicm9sZXMiOlsiUk9MRV9VU0VSIl19.FWCU8w9dDYUxsbqkGc5HxPl-mTc4l533miBNboUVrOA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FIND BY USERNAME",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsaXNhIiwiZXhwIjoxNzQ5ODIxNDI1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdfQ.X7iMjpspmBi1TVZx7lLrcuy_CgoHdMV51p8kx9FkBmg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huIiwiZXhwIjoxNzQ5NTM3NTIwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwicm9sZXMiOlsiUk9MRV9VU0VSIl19.FWCU8w9dDYUxsbqkGc5HxPl-mTc4l533miBNboUVrOA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"lisa\",\n  \"password\": \"1234\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/users/find?username=Marc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users",
+						"find"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Marc"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

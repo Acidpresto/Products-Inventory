@@ -14,8 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -43,14 +42,15 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/login/**").permitAll()
-                .requestMatchers("api/greet").permitAll()
-                .requestMatchers("api/greet/personal").hasAnyAuthority("ROLE_USER")
+                .requestMatchers("/products/**").hasAnyAuthority("ROLE_ADMIN")
+                .requestMatchers(POST,"/orders/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .requestMatchers("/orders/**").hasAnyAuthority("ROLE_ADMIN")
                 .requestMatchers(GET, "/api/users").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .requestMatchers(POST, "/api/users").hasAnyAuthority("ROLE_ADMIN")
                 .requestMatchers(POST, "/api/roles").hasAnyAuthority("ROLE_ADMIN")
                 .requestMatchers(POST, "/api/roles/add-to-user").hasAnyAuthority("ROLE_ADMIN")
-                //.anyRequest().authenticated()); // aquí indicamos que cualquier otro endpoint tiene que tener autenticación (privado)
-                .anyRequest().permitAll()); // aquí indicamos que cualquier otro endpoint tiene que tener autenticación (privado)
+                .anyRequest().authenticated());
+
 
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

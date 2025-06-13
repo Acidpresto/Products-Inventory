@@ -1,9 +1,13 @@
 package com.ironhack.products_inventory.controller;
 
+import com.ironhack.products_inventory.dto.SupplierDTO;
+import com.ironhack.products_inventory.dto.UserDTO;
+import com.ironhack.products_inventory.model.Supplier;
 import com.ironhack.products_inventory.model.User;
 import com.ironhack.products_inventory.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,14 +22,21 @@ public class UserController {
 
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
+        UserDTO userDTO = userService.getUser(username);
+        return ResponseEntity.ok(userDTO);
     }
 
 
-    @PostMapping("/users")
+    @PostMapping("/supplier")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveUser(@RequestBody User user) {
-        userService.saveUser(user);
+    public SupplierDTO saveSupplierDTO(@RequestBody SupplierDTO supplierDTO) {
+        return userService.saveSupplierDTO(supplierDTO);
     }
 }

@@ -11,6 +11,7 @@ import com.ironhack.products_inventory.model.*;
 import com.ironhack.products_inventory.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -240,40 +241,83 @@ public class OrderService {
 
     }
 
-    //SALES CHANGE STATUS TO PAYED -> DECREASE THE NUMBER OF STOCK OF THE PRODUCTS ORDER
+    //SALES CHANGE STATUS TO PAYED -> DECREASE THE NUMBER OF STOCK OF THE PRODUCTS ORDER AND MARK AS PREPARED
     @Transactional
     public String updateSalesStatus(Long orderId, OrderStatus newStatus) {
+
+        //ONLY ALLOW NEW STATUS PAYED FOR SALES - OTHER ARE DONE AUTOMATICALLY
+        if (newStatus != OrderStatus.PAYED) {
+            throw new IllegalArgumentException("You can only change status to PAYED using this endpoint.");
+        }
+
+        //ORDER EXISTS
         SalesOrder order = salesOrderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundExcpetion("Order not found with ID " + orderId));
 
+        //ORDER IS SALES
         if (order.getType() != OrderType.SALES) {
-            throw new IllegalArgumentException("This operation only applies to PURCHASE orders.");
+            throw new IllegalArgumentException("This operation only applies to SALES orders.");
         }
 
-        if (order.getStatus() == newStatus) {
-            log.info("Order " + orderId + " already has status " + newStatus);
-            return "Order already has status " + newStatus;
+        //CHECK IF QUANTITY ORDERED IS BIGGER THAN STOCK
+        for (OrderSafe os : order.getOrderSafes()) {
+            Product product = os.getProduct();
+            int quantity = os.getQuantityOrdered();
+
+            if (product.getStock() < quantity) {
+                String errorMessage = "We can't proceed with the order. Not enough stock for product: "
+                        + product.getProductName()
+                        + ". Current stock: " + product.getStock()
+                        + ", required: " + quantity
+                        + ". New stock will be replaced in the next 48 hours.";
+                log.error(errorMessage);
+                return errorMessage;
+            }
+
         }
 
-        if (newStatus == OrderStatus.PAYED) {
+        order.setStatus(OrderStatus.PAYED);
+        salesOrderRepository.save(order);
+        log.info("Order " + orderId + " status changed to PAYED at " + LocalDateTime.now());
+
+        //CALL ASYNC
+        autoAdvanceOrderStatus(orderId);
+        return "Order " + orderId + " set to PAYED. Preparing and delivering the order in background.";
+
+    }
+
+    @Async
+    public void autoAdvanceOrderStatus(Long orderId) {
+        try {
+            Thread.sleep(10_000); // WAIT 10 seconds
+
+            //CHECK ID - CHANGE STATUS TO PREPARED
+            SalesOrder order = salesOrderRepository.findById(orderId)
+                    .orElseThrow(() -> new OrderNotFoundExcpetion("Order not found with ID " + orderId));
+            order.setStatus(OrderStatus.PREPARED);
+            salesOrderRepository.save(order);
+            log.info("Order " + orderId + " status changed to PREPARED at " + LocalDateTime.now());
+
+            //ALSO UPDATE THE STOCK QUANTITY
             for (OrderSafe orderSafe : order.getOrderSafes()) {
                 Product product = orderSafe.getProduct();
                 int quantity = orderSafe.getQuantityOrdered();
                 product.setStock(product.getStock() - quantity);
                 productRepository.save(product);
-
-                log.info("Stock updated for product: " + product.getProductName() + ", +" + quantity);
+                log.info("Stock updated: " + product.getProductName() + " - " + quantity);
             }
+
+            Thread.sleep(10_000); // WAIT ANOTHER 10 SECONDS
+            //CHANGE STATUS TO DELIVERED
+            order.setStatus(OrderStatus.DELIVERED);
+            salesOrderRepository.save(order);
+            log.info("Order " + orderId + " status changed to DELIVERED at " + LocalDateTime.now());
+            //SEND ERROR IS WE INTERRUP
+        } catch (InterruptedException e) {
+            log.error("Error while auto-advancing order " + orderId, e);
+            Thread.currentThread().interrupt();
         }
-
-        order.setStatus(newStatus);
-        salesOrderRepository.save(order);
-        log.info("Order status changed to " + newStatus);
-
-
-        String message = "Order " + orderId + " has change the status to " + newStatus ;
-        log.info(message);
-        return message;
     }
+
 
 }
